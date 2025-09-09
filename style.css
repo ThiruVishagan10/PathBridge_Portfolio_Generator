@@ -1,0 +1,46 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  color: #272829;
+  background: #f5f8fd;
+}
+
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  padding: 20px;
+  background: #040b14;
+  overflow-y: auto;
+}
+
+#header .profile img {
+  border: 6px solid #2c2f3f;
+}
+
+#header .profile h1 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 600;
+  color: #fff;
+}
+
+#header .profile p {
+  font-size: 14px;
+  color: #aaa;
+}
+
+#main {
+  margin-left: 280px;
+  padding: 20px;
+}
+
+.section-title h2 {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #173b6c;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}

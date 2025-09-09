@@ -1,141 +1,89 @@
-import google.generativeai as genai
-from google.api_core import exceptions
 import os
-from dotenv import load_dotenv
+import json
+from jinja2 import Environment, FileSystemLoader
+import google.generativeai as genai
 
-# Load environment variables from .env file
-load_dotenv()
 
-api_key = os.getenv('GEMINI_API_KEY')
-if not api_key:
-    print("Error: Please set GEMINI_API_KEY in .env file")
-    exit(1)
+# ---------- Configure Gemini ----------
+genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
-genai.configure(api_key=api_key)
+def enhance_content(prompt, user_input):
+    """Use Gemini to improve the content before injecting into the template."""
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(f"{prompt}\nUser input: {user_input}")
+    return response.text if response.text else user_input
 
-def enhance_with_gemini(prompt):
-    try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-        if response.text:
-            return response.text.strip()
-        return prompt  
-    except exceptions.NotFound:
-        print("Error: Gemini API model not found. Please check your API key and model version.")
-        return prompt
-    except Exception as e:
-        print(f"Error generating content: {str(e)}")
-        return prompt
+# ---------- Collect User Data ----------
+def collect_user_data():
+    print("📌 Please provide details for your portfolio:\n")
 
-name = input("Enter your name: ")
-education = input("Enter your education details: ")
-skills = input("Enter your skills (comma separated): ")
-project = input("Enter a project title and details: ")
-experience = input("Enter your experience/internship: ")
-certifications = input("Enter your certifications (optional): ")
+    name = input("Your Name: ")
+    about = input("Short Bio/About You: ")
+    education = input("Education: ")
 
-skills_prompt = f"""
-Rewrite and expand the following skills into a professional format suitable for a student portfolio.
-Explain technical expertise and practical applications where possible. 
-Keep it concise but impactful .
-Skills: {skills}
-"""
+    # Skills (list)
+    skills = []
+    print("\nEnter your skills (type 'done' when finished):")
+    while True:
+        skill = input("- ")
+        if skill.lower() == "done":
+            break
+        skills.append(enhance_content("Polish this skill for a portfolio bullet.", skill))
 
-project_prompt = f"""
-Write a polished description for this student project.
-Highlight the purpose, technologies used, outcomes, and the student's role.
-Keep it professional and around .
-Project: {project}
-"""
+    # Experience (list)
+    experience = []
+    print("\nEnter your experiences (type 'done' when finished):")
+    while True:
+        exp = input("- ")
+        if exp.lower() == "done":
+            break
+        experience.append(enhance_content("Polish this work/experience item.", exp))
 
-experience_prompt = f"""
-Create a professional description of the following experience or internship. 
-Use bullet points if possible, focusing on key responsibilities, tools/technologies, and achievements.
-Make it sound like resume-style content.
-Experience: {experience}
-"""
+    # Projects (list)
+    projects = []
+    print("\nEnter your projects (type 'done' when finished):")
+    while True:
+        proj = input("- ")
+        if proj.lower() == "done":
+            break
+        projects.append(enhance_content("Format this project description for a portfolio card.", proj))
 
-certifications_prompt = f"""
-Format the following certifications professionally for a portfolio. 
-Include the certification name, issuing organization, and (if available) year of completion.
-List them as bullet points.
-Certifications: {certifications}
-"""
+    # Certifications (list)
+    certifications = []
+    print("\nEnter your certifications (type 'done' when finished):")
+    while True:
+        cert = input("- ")
+        if cert.lower() == "done":
+            break
+        certifications.append(enhance_content("Polish this certification entry.", cert))
 
-education_prompt = f"""
-Summarize the student's education details into a professional format for a portfolio.
-Include degree, field of study, institution, and any honors/achievements.
-Keep it 2–3 sentences long.
-Education: {education}
-"""
+    return {
+        "name": name,
+        "about": about,
+        "education": education,
+        "skills": skills,
+        "experience": experience,
+        "projects": projects,
+        "certifications": certifications,
+    }
 
-about_prompt = f"""
-Write a professional 'About Me' section for a student named {name}.
-Base it on the following:
-- Education: {education}
-- Skills: {skills}
-- Projects: {project}
-- Experience: {experience}
-- Certifications: {certifications}
+# ---------- Generate Portfolio ----------
+def generate_portfolio(data):
+    env = Environment(loader=FileSystemLoader("."))
+    template = env.get_template("template_portfolio.html")
 
-Guidelines:
-- Length: 3–4 sentences.
-- Tone: Confident, positive, and professional.
-- Focus: Career goals, technical strengths, and key achievements.
-- Make it sound like a student who is career-ready.
-"""
+    html_content = template.render(**data)
 
-skills_final = enhance_with_gemini(skills_prompt)
-project_final = enhance_with_gemini(project_prompt)
-experience_final = enhance_with_gemini(experience_prompt)
-certifications_final = enhance_with_gemini(certifications_prompt)
-education_final = enhance_with_gemini(education_prompt)
-about_final = enhance_with_gemini(about_prompt)
+    os.makedirs("output", exist_ok=True)
+    output_path = os.path.join("output", "portfolio.html")
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
 
-html_content = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{name}'s Portfolio</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; }}
-        h1, h2 {{ color: #2c3e50; }}
-        p {{ font-size: 16px; line-height: 1.5; }}
-        ul {{ margin: 0; padding-left: 20px; }}
-        .section {{ margin-bottom: 30px; }}
-    </style>
-</head>
-<body>
-    <h1>{name}'s Portfolio</h1>
-    <div class="section">
-        <h2>About Me</h2>
-        <p>{about_final}</p>
-    </div>
-    <div class="section">
-        <h2>Education</h2>
-        <p>{education_final}</p>
-    </div>
-    <div class="section">
-        <h2>Skills</h2>
-        <p>{skills_final}</p>
-    </div>
-    <div class="section">
-        <h2>Projects</h2>
-        <p>{project_final}</p>
-    </div>
-    <div class="section">
-        <h2>Experience</h2>
-        <p>{experience_final}</p>
-    </div>
-    <div class="section">
-        <h2>Certifications</h2>
-        <p>{certifications_final}</p>
-    </div>
-</body>
-</html>
-"""
+    print(f"\n✅ Portfolio generated successfully! Open '{output_path}' in your browser.")
 
-with open("portfolio.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
+# ---------- Run ----------
+if __name__ == "__main__":
+    with open("sample-data.json", "r") as f:
+        user_data = json.load(f)
+    generate_portfolio(user_data)
 
-print("\n✅ Portfolio generated successfully! Open 'portfolio.html' in your browser.")
