@@ -1,0 +1,27 @@
+{
+  "name": "John Doe",
+  "about": "Passionate computer science student with expertise in web development and machine learning.",
+  "education": "Bachelor of Science in Computer Science, XYZ University (2021-2025)",
+  "skills": [
+    "Python Programming",
+    "JavaScript & React",
+    "Machine Learning",
+    "Database Management",
+    "Git & Version Control"
+  ],
+  "experience": [
+    "Software Development Intern at ABC Tech (Summer 2023)",
+    "Teaching Assistant for Data Structures Course (Fall 2023)",
+    "Freelance Web Developer (2022-Present)"
+  ],
+  "projects": [
+    "E-commerce Website - Built with React and Node.js",
+    "Machine Learning Stock Predictor - Python with TensorFlow",
+    "Task Management App - Full-stack web application"
+  ],
+  "certifications": [
+    "AWS Cloud Practitioner Certification",
+    "Google Analytics Certified",
+    "Python for Data Science - Coursera"
+  ]
+}
