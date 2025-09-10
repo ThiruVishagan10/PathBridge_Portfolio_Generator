@@ -17,10 +17,12 @@ def generate_portfolio(data: dict) -> str:
     # ✅ Process data according to new structure
     enhanced_data = {
         "name": data.get("name", ""),
-        "about": enhance_content("Rewrite as a professional 2-sentence bio:", data.get("about", "")),
+        "about": enhance_content("Transform this into a compelling professional bio that highlights key strengths, experience, and passion. Make it engaging and concise (2-3 sentences):", data.get("about", "")),
         "education": f"{data.get('degree', '')} - {data.get('collegeName', '')}, {data.get('yearOfPassing', '')}",
         "skills": [enhance_content("Return only the skill name:", skill.strip()) for skill in data.get("skills", "").split(",") if skill.strip()],
-        "projects": data.get("projects", []),
+        "linkedinUrl": data.get("linkedinUrl", ""),
+        "githubUrl": data.get("githubUrl", ""),
+        "projects": [{"name": project.get("name", ""), "description": enhance_content("Rewrite this project description to be more compelling and professional. Highlight the key technologies, features, and impact. Keep it concise but impressive:", project.get("description", ""))} for project in data.get("projects", [])],
         "experience": data.get("experiences", []),
         "certifications": data.get("certifications", []),
     }
