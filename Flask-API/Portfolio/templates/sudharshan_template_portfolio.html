@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe's Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #000; color: #fff; line-height: 1.6; position: relative; overflow-x: hidden; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+        
+        /* Video Background */
+        .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .video-bg video { width: 100%; height: 100%; object-fit: cover; filter: blur(3px); opacity: 0.3; }
+        
+        /* Navigation */
+        nav { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); border-bottom: 2px solid #8a2be2; z-index: 1000; padding: 15px 0; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.8rem; font-weight: bold; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { color: #fff; text-decoration: none; padding: 10px 15px; border-radius: 25px; transition: all 0.3s; }
+        .nav-links a:hover { background: #8a2be2; color: #000; transform: translateY(-2px); }
+        
+        /* Hero Section */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 20px; }
+        .hero .greeting { color: #fff; }
+        .hero .name { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Sections */
+        section { padding: 80px 0; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 50px; background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-content { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-radius: 15px; padding: 40px; margin: 20px 0; border: 1px solid #000; }
+        
+        /* About */
+        .about-text { text-align: center; font-size: 1.1rem; margin-bottom: 30px; }
+        .social-links { display: flex; justify-content: center; gap: 20px; }
+        .social-btn { background: #8a2be2; color: #fff; padding: 12px 25px; border-radius: 25px; text-decoration: none; transition: all 0.3s; }
+        .social-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4); }
+        
+        /* Education */
+        .education-card { background: linear-gradient(145deg, #1a1a1a, #2d2d2d); border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3); transition: transform 0.3s; }
+        .education-card:hover { transform: translateY(-5px); }
+        .education-icon { font-size: 3rem; background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .degree { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.5rem; margin-bottom: 10px; }
+        .college { color: #fff; font-size: 1.2rem; margin-bottom: 15px; }
+        .year { background: #8a2be2; color: #000; padding: 8px 20px; border-radius: 20px; font-weight: bold; display: inline-block; }
+        
+        /* Skills */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+        .skill-item { text-align: center; }
+        .skill-circle { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#8a2be2 0deg, #8a2be2 var(--percent), #333 var(--percent), #333 360deg); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; }
+        .skill-inner { width: 90px; height: 90px; border-radius: 50%; background: #000; display: flex; align-items: center; justify-content: center; }
+        .skill-percent { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 16px; }
+        .skill-name { color: #fff; font-size: 14px; }
+        
+        /* Experience */
+        .experience-item { display: flex; margin-bottom: 30px; align-items: center; }
+        .experience-item:nth-child(even) { flex-direction: row-reverse; }
+        .experience-time { flex: 1; text-align: center; }
+        .experience-time h3 { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
+        .experience-time h4 { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem; }
+        .experience-content { flex: 2; padding: 0 30px; }
+        .experience-content h4 { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.3rem; margin-bottom: 10px; }
+        
+        /* Projects/Achievements/Certifications */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: linear-gradient(145deg, #1a1a1a, #2d2d2d); border: 2px solid #8a2be2; border-radius: 15px; padding: 25px; transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(138, 43, 226, 0.5); }
+        .card-title { background: linear-gradient(45deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; }
+        .card-desc { color: #fff; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2rem; }
+            .section-title { font-size: 2rem; }
+            .experience-item { flex-direction: column !important; text-align: center; }
+            .experience-content { padding: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-bg">
+        <video autoplay muted loop>
+            <source src="https://motionbgs.com/media/1041/snowfall-in-forest.960x540.mp4" type="video/mp4">
+        </video>
+    </div>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">john</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#certifications">Certifications</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>
+                <span class="greeting">Hi, I am</span><br>
+                <span class="name">John</span><br>
+                <span class="name">Doe</span>
+            </h1>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="section-content">
+                <p class="about-text">Passionate software developer with 3 years of experience in web development</p>
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/johndoe" target="_blank" class="social-btn">Visit LinkedIn</a>
+                    <a href="https://github.com/johndoe" target="_blank" class="social-btn">Visit GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="education-card">
+                <div class="education-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="degree">B.Sc Computer Science</h3>
+                <h4 class="college">XYZ University</h4>
+                <span class="year">2022</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <div class="section-content">
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <div class="skill-circle" style="--percent: 288deg;">
+                            <div class="skill-inner">
+                                <span class="skill-percent">80%</span>
+                            </div>
+                        </div>
+                        <div class="skill-name">React</div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-circle" style="--percent: 306deg;">
+                            <div class="skill-inner">
+                                <span class="skill-percent">85%</span>
+                            </div>
+                        </div>
+                        <div class="skill-name">Next.js</div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-circle" style="--percent: 324deg;">
+                            <div class="skill-inner">
+                                <span class="skill-percent">90%</span>
+                            </div>
+                        </div>
+                        <div class="skill-name">Tailwind</div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-circle" style="--percent: 270deg;">
+                            <div class="skill-inner">
+                                <span class="skill-percent">75%</span>
+                            </div>
+                        </div>
+                        <div class="skill-name">Python</div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-circle" style="--percent: 342deg;">
+                            <div class="skill-inner">
+                                <span class="skill-percent">95%</span>
+                            </div>
+                        </div>
+                        <div class="skill-name">JavaScript</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="section-content">
+                <div class="experience-item">
+                    <div class="experience-time">
+                        <h3>2022-Present</h3>
+                    </div>
+                    <div class="experience-content">
+                        <h4>Software Engineer</h4>
+                        <p>ABC Corp</p>
+                    </div>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-time">
+                        <h3>2021-2022</h3>
+                    </div>
+                    <div class="experience-content">
+                        <h4>Frontend Developer</h4>
+                        <p>Tech Startup</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">Projects</h2>
+            <div class="section-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3 class="card-title">Portfolio Website</h3>
+                        <p class="card-desc">A modern portfolio built using Next.js and Tailwind CSS</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">E-commerce App</h3>
+                        <p class="card-desc">Full-stack shopping application with React and Node.js</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements">
+        <div class="container">
+            <h2 class="section-title">Achievements</h2>
+            <div class="section-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3 class="card-title">Best Student Award</h3>
+                        <p class="card-desc">Received for outstanding academic performance</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Hackathon Winner</h3>
+                        <p class="card-desc">Won first place in university coding competition</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications">
+        <div class="container">
+            <h2 class="section-title">Certifications</h2>
+            <div class="section-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3 class="card-title">AWS Certified Solutions Architect</h3>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Google Cloud Professional Developer</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
