@@ -61,14 +61,30 @@ def generate_portfolio(data: dict) -> str:
     
     # ✅ Enhance achievements
     raw_achievements = data.get("achievements", [])
+    print(f"Raw achievements data: {raw_achievements}")
+    print(f"Raw achievements type: {type(raw_achievements)}")
+    
+    # Handle different data formats
+    if isinstance(raw_achievements, str):
+        # If it's a string, split by comma or newline
+        raw_achievements = [a.strip() for a in raw_achievements.replace('\n', ',').split(',') if a.strip()]
+    elif not isinstance(raw_achievements, list):
+        raw_achievements = []
+    
     enhanced_achievements = []
     for achievement in raw_achievements:
-        if achievement and isinstance(achievement, str) and achievement.strip():
+        print(f"Processing achievement: {achievement}, type: {type(achievement)}")
+        # Convert to string if it's not already
+        achievement_str = str(achievement).strip() if achievement else ""
+        if achievement_str:
             enhanced_desc = enhance_content(
                 "Transform this achievement into a compelling professional accomplishment with specific details and impact:",
-                achievement
+                achievement_str
             )
             enhanced_achievements.append(enhanced_desc)
+        else:
+            print(f"Achievement filtered out: {achievement}")
+    print(f"Final enhanced achievements: {enhanced_achievements}")
 
     # ✅ Enhance education
     raw_education = f"{data.get('degree', '')} - {data.get('collegeName', '')}, {data.get('yearOfPassing', '')}"

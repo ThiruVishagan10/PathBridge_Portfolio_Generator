@@ -274,15 +274,15 @@
           <a class="nav-link text-white mb-2" href="#about"><i class="fas fa-user me-2"></i> About</a>
           <a class="nav-link text-white mb-2" href="#education"><i class="fas fa-graduation-cap me-2"></i> Education</a>
           <a class="nav-link text-white mb-2" href="#skills"><i class="fas fa-cogs me-2"></i> Skills</a>
+          {% if achievements and achievements|select('string')|list %}
+          <a class="nav-link text-white mb-2" href="#achievements"><i class="fas fa-trophy me-2"></i> Achievements</a>
+          {% endif %}
           <a class="nav-link text-white mb-2" href="#projects"><i class="fas fa-folder me-2"></i> Projects</a>
           {% if experience and experience|selectattr('role')|list %}
           <a class="nav-link text-white mb-2" href="#experience"><i class="fas fa-briefcase me-2"></i> Experience</a>
           {% endif %}
           {% if certifications and certifications|select('string')|list %}
-          <a class="nav-link text-white mb-2" href="#certifications"><i class="fas fa-certificate me-2"></i> Certifications</a>
-          {% endif %}
-          {% if achievements and achievements|select('string')|list %}
-          <a class="nav-link text-white" href="#achievements"><i class="fas fa-trophy me-2"></i> Achievements</a>
+          <a class="nav-link text-white" href="#certifications"><i class="fas fa-certificate me-2"></i> Certifications</a>
           {% endif %}
         </nav>
       </aside>
@@ -382,13 +382,34 @@
         </svg>
       </section>
 
+      <!-- Achievements -->
+      {% if achievements and achievements|select('string')|list %}
+      <section id="achievements" class="section" data-aos="fade-up">
+        <h2>🏆 Achievements</h2>
+        <div class="row">
+          {% for achievement in achievements %}
+          {% if achievement %}
+          <div class="col-12 mb-3">
+            <div class="card">
+              <div class="d-flex align-items-start">
+                <i class="fas fa-trophy text-warning me-3 mt-1" style="font-size: 1.5rem;"></i>
+                <p class="mb-0" style="color: #e5e7eb;">{{ achievement }}</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
       <!-- Projects -->
       <section id="projects" class="section" data-aos="fade-left">
         <h2>📂 Projects</h2>
         <div class="row">
           {% for project in projects %}
           <div class="{% if projects|length == 1 %}col-12{% else %}col-md-6{% endif %} mb-3">
-            <div class="card p-3">
+            <div class="card p-3 h-100">
               <h5 style="color: white">
                 {% if project.url %}
                   <a href="{{ project.url }}" target="_blank" style="color: #4fc3f7; text-decoration: none;">{{ project.name }}</a>
@@ -461,26 +482,6 @@
       </section>
       {% endif %}
 
-      <!-- Achievements -->
-      {% if achievements and achievements|select('string')|list %}
-      <section id="achievements" class="section" data-aos="fade-up">
-        <h2>🏆 Achievements</h2>
-        <div class="row">
-          {% for achievement in achievements %}
-          {% if achievement %}
-          <div class="col-12 mb-3">
-            <div class="card">
-              <div class="d-flex align-items-start">
-                <i class="fas fa-trophy text-warning me-3 mt-1" style="font-size: 1.5rem;"></i>
-                <p class="mb-0" style="color: #e5e7eb;">{{ achievement }}</p>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-          {% endfor %}
-        </div>
-      </section>
-      {% endif %}
       </div>
     </div>
 
