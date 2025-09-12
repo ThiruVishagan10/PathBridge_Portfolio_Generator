@@ -158,7 +158,7 @@ def generate_portfolio(data: dict) -> str:
 
     # ✅ Jinja2 setup
     env = Environment(loader=FileSystemLoader("Portfolio/templates"))
-    template = env.get_template("template_portfolio.html")
+    template = env.get_template("sudharshan_template_portfolio.html")
 
     # ✅ Render HTML
     html_content = template.render(**enhanced_data)
