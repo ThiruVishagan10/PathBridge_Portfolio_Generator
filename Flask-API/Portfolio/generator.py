@@ -20,16 +20,50 @@ def generate_portfolio(data: dict) -> str:
         data.get("about", "")
     )
 
-    # ✅ Enhance skills (batch)
-    skills_data = data.get("skills", "")
-    if isinstance(skills_data, str):
-        raw_skills = [s.strip() for s in skills_data.split(",") if s.strip()]
+    # ✅ Generate skills based on GitHub projects
+    def generate_skills_from_projects(projects):
+        language_count = {}
+        total_projects = len(projects)
+        
+        # Count languages from projects
+        for project in projects:
+            lang = project.get("language", "")
+            if lang and lang != "Not specified":
+                language_count[lang] = language_count.get(lang, 0) + 1
+        
+        # Calculate percentages and create skills
+        skills_with_percentages = []
+        for lang, count in language_count.items():
+            # Base percentage on project count, with minimum 60% and maximum 95%
+            percentage = min(95, max(60, int((count / total_projects) * 100) + 40))
+            skills_with_percentages.append({"name": lang, "percentage": percentage})
+        
+        # Add common web technologies if not present
+        existing_langs = [skill["name"] for skill in skills_with_percentages]
+        common_skills = {
+            "HTML/CSS": 85,
+            "Git": 90,
+            "REST APIs": 80
+        }
+        
+        for skill, percentage in common_skills.items():
+            if not any(existing in skill for existing in existing_langs):
+                skills_with_percentages.append({"name": skill, "percentage": percentage})
+        
+        return skills_with_percentages
+    
+    # Get projects for skill analysis
+    raw_projects = data.get("projects", [])
+    if raw_projects:
+        enhanced_skills = generate_skills_from_projects(raw_projects)
     else:
-        raw_skills = skills_data if isinstance(skills_data, list) else []
-    enhanced_skills = enhance_batch(
-        "Return only the polished skill names:",
-        raw_skills
-    ) if raw_skills else []
+        # Fallback to manual skills if no projects
+        skills_data = data.get("skills", "")
+        if isinstance(skills_data, str):
+            raw_skills = [s.strip() for s in skills_data.split(",") if s.strip()]
+        else:
+            raw_skills = skills_data if isinstance(skills_data, list) else []
+        enhanced_skills = [{"name": skill, "percentage": 80} for skill in raw_skills] if raw_skills else []
 
     # ✅ Enhance project descriptions (batch)
     raw_projects = data.get("projects", [])

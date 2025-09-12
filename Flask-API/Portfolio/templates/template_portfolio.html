@@ -229,6 +229,44 @@
           font-size: 3rem !important;
         }
       }
+      
+      /* Skill Circle Styles */
+      .skill-circle {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto;
+      }
+      .skill-circle-progress {
+        transform: rotate(-90deg);
+      }
+      .skill-circle-bg {
+        fill: none;
+        stroke: rgba(255,255,255,0.1);
+        stroke-width: 10;
+      }
+      .skill-circle-fill {
+        fill: none;
+        stroke: url(#gradient);
+        stroke-width: 10;
+        stroke-dasharray: 440;
+        stroke-dashoffset: 440;
+        transition: stroke-dashoffset 2s ease;
+      }
+      .skill-circle-text {
+        width: 100%;
+        color: white;
+      }
+      .skill-percentage {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .skill-name {
+        font-size: 0.9rem;
+        color: #e5e7eb;
+      }
     </style>
   </head>
   <body>
@@ -266,7 +304,6 @@
           <a href="{{ githubUrl }}" target="_blank" class="text-white"><i class="fab fa-github"></i></a>
           {% endif %}
           <a href="#" class="text-white"><i class="fab fa-x-twitter"></i></a>
-          <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
         </div>
 
         <!-- Navigation -->
@@ -316,62 +353,20 @@
         <div class="row">
           {% for skill in skills %}
           <div class="col-md-4 col-sm-6 mb-4">
-            <div class="skill-circle position-relative" data-percentage="80">
+            <div class="skill-circle position-relative" data-percentage="{{ skill.percentage if skill.percentage else 80 }}">
               <svg class="skill-circle-progress" width="160" height="160" viewBox="0 0 160 160">
                 <circle class="skill-circle-bg" cx="80" cy="80" r="70" />
-                <circle class="skill-circle-fill" cx="80" cy="80" r="70" />
+                <circle class="skill-circle-fill" cx="80" cy="80" r="70" style="stroke-dashoffset: {{ 440 - (440 * (skill.percentage if skill.percentage else 80) / 100) }};"/>
               </svg>
               <div class="skill-circle-text position-absolute top-50 start-50 translate-middle text-center">
-                <span class="skill-percentage">80%</span>
-                <span class="skill-name d-block">{{ skill }}</span>
+                <span class="skill-percentage">{{ skill.percentage if skill.percentage else 80 }}%</span>
+                <span class="skill-name d-block">{{ skill.name if skill.name else skill }}</span>
               </div>
             </div>
           </div>
           {% endfor %}
         </div>
-        <style>
-          .skill-circle {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto;
-          }
-          .skill-circle-progress {
-            transform: rotate(-90deg);
-          }
-          .skill-circle-bg {
-            fill: none;
-            stroke: rgba(255,255,255,0.1);
-            stroke-width: 10;
-          }
-          .skill-circle-fill {
-            fill: none;
-            stroke: url(#gradient);
-            stroke-width: 10;
-            stroke-dasharray: 440;
-            stroke-dashoffset: 440;
-            animation: circle-fill 2s ease forwards;
-          }
-          .skill-circle-text {
-            width: 100%;
-            color: white;
-          }
-          .skill-percentage {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-          }
-          .skill-name {
-            font-size: 0.9rem;
-            color: #e5e7eb;
-          }
-          @keyframes circle-fill {
-            to {
-              stroke-dashoffset: 88; /* (440 * (100 - percentage)) / 100 */
-            }
-          }
-        </style>
+
         <svg width="0" height="0">
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -538,6 +533,23 @@
       }
       
       setProfileImage();
+      
+      // Animate skill circles
+      function animateSkillCircles() {
+        const skillCircles = document.querySelectorAll('.skill-circle');
+        skillCircles.forEach(circle => {
+          const percentage = parseInt(circle.dataset.percentage);
+          const circleElement = circle.querySelector('.skill-circle-fill');
+          const offset = 440 - (440 * percentage / 100);
+          
+          setTimeout(() => {
+            circleElement.style.strokeDashoffset = offset;
+          }, 500);
+        });
+      }
+      
+      // Initialize skill circles animation when page loads
+      window.addEventListener('load', animateSkillCircles);
     </script>
   </body>
 </html>
