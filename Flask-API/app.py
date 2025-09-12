@@ -1,11 +1,20 @@
-from flask import Flask, request, send_file, make_response
+from flask import Flask, request, send_file, make_response, jsonify
 from flask_cors import CORS
 from Portfolio.generator import generate_portfolio
+from github_fetcher import fetch_github_repos
 import os
-import re
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
-CORS(app)  # Allow Next.js frontend to connect (http://localhost:3000 by default)
+CORS(app, origins=["*"], allow_headers=["Content-Type"], methods=["GET", "POST"])
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Portfolio Generator API is running!", 200
+
+@app.route("/test", methods=["POST"])
+def test():
+    """Quick test endpoint"""
+    return jsonify({"status": "success", "message": "Server is responding"}), 200
 
 @app.route("/", methods=["POST"])
 def create_portfolio():
@@ -15,38 +24,50 @@ def create_portfolio():
     """
     try:
         data = request.get_json()
-
         if not data:
-            # Note: For production, consider returning a full HTML error page
             return "No input data provided", 400
 
-        # Generate the portfolio as an HTML string
-        html_content = generate_portfolio(data)
+        # ✅ If GitHub URL is provided → fetch repos
+        github_url = data.get("githubUrl")
+        if github_url:
+            try:
+                username = github_url.rstrip("/").split("/")[-1]
+                github_projects = fetch_github_repos(username, max_repos=10)
+                manual_projects = data.get("projects", [])
+                data["projects"] = manual_projects + github_projects
+            except Exception as github_error:
+                print(f"GitHub fetch failed: {github_error}")
+                pass
 
-        # Return the HTML content directly to the frontend
+        # ✅ Generate the portfolio
+        print("Starting portfolio generation...")
+        html_content = generate_portfolio(data)
+        print("Portfolio generation completed successfully")
         return html_content, 200
 
     except Exception as e:
-        # For a full application, you might want a more detailed log or error page.
-        print(f"An error occurred: {e}")
-        return "An internal server error occurred.", 500
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Detailed error: {error_details}")
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 
 @app.route("/download-html", methods=["GET"])
 def download_html():
-    """Download the generated portfolio as HTML file"""
+    """Download the generated portfolio as viewable HTML file"""
     try:
         html_path = os.path.join("output", "portfolio.html")
         if os.path.exists(html_path):
-            return send_file(html_path, as_attachment=True, download_name="portfolio.html")
+            return send_file(html_path, as_attachment=True, download_name="my_portfolio.html", mimetype='text/html')
         else:
             return "No portfolio found. Generate one first.", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
 
+
 @app.route("/download-txt", methods=["GET"])
 def download_txt():
-    """Download the generated portfolio HTML as TXT file for editing"""
+    """Download the generated portfolio as TXT file for viewing source"""
     try:
         html_path = os.path.join("output", "portfolio.html")
         if os.path.exists(html_path):
@@ -54,14 +75,50 @@ def download_txt():
                 html_content = f.read()
             
             response = make_response(html_content)
-            response.headers['Content-Type'] = 'text/plain'
-            response.headers['Content-Disposition'] = 'attachment; filename=portfolio.txt'
+            response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+            response.headers['Content-Disposition'] = 'attachment; filename="portfolio_source.txt"'
             return response
         else:
             return "No portfolio found. Generate one first.", 404
     except Exception as e:
         return f"Error: {str(e)}", 500
 
+@app.route("/download-code", methods=["GET"])
+def download_code():
+    """Download the generated portfolio source code as HTML file for editing"""
+    try:
+        html_path = os.path.join("output", "portfolio.html")
+        if os.path.exists(html_path):
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            response = make_response(html_content)
+            response.headers['Content-Type'] = 'text/html; charset=utf-8'
+            response.headers['Content-Disposition'] = 'attachment; filename="portfolio_code.html"'
+            return response
+        else:
+            return "No portfolio found. Generate one first.", 404
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+
+
+@app.route("/fetch_projects", methods=["POST"])
+def fetch_projects():
+    """Standalone API to fetch GitHub repositories for a given GitHub URL"""
+    try:
+        data = request.json
+        github_url = data.get("github_url")
+
+        if not github_url:
+            return jsonify({"error": "GitHub URL required"}), 400
+
+        username = github_url.rstrip("/").split("/")[-1]
+        projects = fetch_github_repos(username)
+
+        return jsonify({"projects": projects})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
-    # In a production environment, you would use a production WSGI server like Gunicorn
-    app.run(port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)

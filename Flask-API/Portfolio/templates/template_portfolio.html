@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ name }}'s Portfolio</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- AOS Animations -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: white;
+        position: relative;
+      }
+      .bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -2;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: -1;
+      }
+      .container {
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.125);
+        border-radius: 24px;
+        padding: 2rem;
+        margin: 2rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 1200px;
+      }
+      h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      h2 {
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 1.5rem;
+      }
+      .section {
+        margin: 3rem 0;
+        padding: 1.5rem;
+        background: rgba(31, 41, 55, 0.5);
+        border-radius: 16px;
+        border: 1px solid rgba(75, 85, 99, 0.3);
+      }
+      .card {
+        background: rgba(31, 41, 55, 0.8);
+        border: 1px solid rgba(75, 85, 99, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(168, 85, 247, 0.15);
+        border-color: rgba(168, 85, 247, 0.3);
+      }
+      .card h5 {
+        color: #f3f4f6;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+      .progress {
+        background: rgba(55, 65, 81, 0.8);
+        height: 32px;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        border-radius: 16px;
+      }
+      .list-group {
+        background: none;
+      }
+      .list-group-item {
+        background: rgba(31, 41, 55, 0.6);
+        border: 1px solid rgba(75, 85, 99, 0.3);
+        color: #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+      }
+      .list-group-item:hover {
+        background: rgba(31, 41, 55, 0.8);
+        transform: translateX(4px);
+      }
+      header {
+        text-align: center;
+        padding: 4rem 0;
+        margin-bottom: 2rem;
+      }
+      #typed-text {
+        font-size: 1.25rem;
+        color: #d1d5db;
+      }
+      
+      /* Mobile Navbar */
+      .mobile-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(16px);
+        padding: 1rem;
+        z-index: 1001;
+      }
+      
+      .navbar-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+      
+      /* Mobile First - Hide sidebar by default */
+      aside {
+        top: 70px;
+        height: calc(100vh - 70px);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      
+      aside.show {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0 !important;
+        padding-top: 70px;
+      }
+      
+      .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 1rem;
+      }
+      
+      main {
+        padding: 2rem 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem !important;
+      }
+      
+      /* Desktop */
+      @media (min-width: 769px) {
+        .mobile-navbar {
+          display: none;
+        }
+        
+        aside {
+          top: 0;
+          height: 100vh;
+          transform: translateX(0);
+        }
+        
+        .main-content {
+          margin-left: 280px !important;
+          padding-top: 0;
+        }
+        
+        .container {
+          width: calc(100vw - 320px) !important;
+          max-width: 1200px !important;
+        }
+        
+        main {
+          padding: 0;
+        }
+        
+        h1 {
+          font-size: 3rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="bg-video">
+      <source
+        src="https://motionbgs.com/media/1041/snowfall-in-forest.960x540.mp4"
+        type="video/mp4"
+      />
+      <source src="/static/videos/bg.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Mobile Navbar -->
+    <nav class="mobile-navbar">
+      <button class="navbar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h5 class="mb-0 text-white">{{ name }}</h5>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); color: #fff; padding: 2rem; display: flex; flex-direction: column; align-items: center; z-index: 1000; overflow-y: auto;">
+        <!-- Profile Image -->
+        <img id="profileImage" src="https://via.placeholder.com/120" alt="Profile" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #1e293b;" />
+        
+        <!-- Name -->
+        <h4 class="fw-bold mb-1">{{ name }}</h4>
+        
+        <!-- Social Links -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          {% if linkedinUrl %}
+          <a href="{{ linkedinUrl }}" target="_blank" class="text-white"><i class="fab fa-linkedin"></i></a>
+          {% endif %}
+          {% if githubUrl %}
+          <a href="{{ githubUrl }}" target="_blank" class="text-white"><i class="fab fa-github"></i></a>
+          {% endif %}
+          <a href="#" class="text-white"><i class="fab fa-x-twitter"></i></a>
+          <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav flex-column text-start w-100">
+          <a class="nav-link text-white mb-2" href="#about"><i class="fas fa-user me-2"></i> About</a>
+          <a class="nav-link text-white mb-2" href="#education"><i class="fas fa-graduation-cap me-2"></i> Education</a>
+          <a class="nav-link text-white mb-2" href="#skills"><i class="fas fa-cogs me-2"></i> Skills</a>
+          <a class="nav-link text-white mb-2" href="#projects"><i class="fas fa-folder me-2"></i> Projects</a>
+          {% if experience and experience|selectattr('role')|list %}
+          <a class="nav-link text-white mb-2" href="#experience"><i class="fas fa-briefcase me-2"></i> Experience</a>
+          {% endif %}
+          {% if certifications and certifications|select('string')|list %}
+          <a class="nav-link text-white mb-2" href="#certifications"><i class="fas fa-certificate me-2"></i> Certifications</a>
+          {% endif %}
+          {% if achievements and achievements|select('string')|list %}
+          <a class="nav-link text-white" href="#achievements"><i class="fas fa-trophy me-2"></i> Achievements</a>
+          {% endif %}
+        </nav>
+      </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Hero Section -->
+      <main class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background: url('https://motionbgs.com/media/1041/snowfall-in-forest.960x540.mp4') center/cover no-repeat;">
+        <div class="text-center text-white p-4" style="background: rgba(0,0,0,0.4); border-radius: 16px;">
+          <h1 class="fw-bold" style="font-size: 3rem;">{{ name }}</h1>
+          <p class="fs-4"><span id="typed-text"></span></p>
+        </div>
+      </main>
+
+      <div class="container mx-auto" style="margin-left: auto; margin-right: auto; width: calc(100vw - 320px);">
+      <!-- About -->
+      <section id="about" class="section" data-aos="fade-up">
+        <h2>👨🎓 About Me</h2>
+        <p>{{ about }}</p>
+      </section>
+
+      <!-- Education -->
+      <section id="education" class="section" data-aos="fade-right">
+        <h2>🎓 Education</h2>
+        <p>{{ education }}</p>
+      </section>
+
+      <!-- Skills -->
+      <section id="skills" class="section" data-aos="zoom-in">
+        <h2>🛠 Skills</h2>
+        <div class="row">
+          {% for skill in skills %}
+          <div class="col-md-4 col-sm-6 mb-4">
+            <div class="skill-circle position-relative" data-percentage="80">
+              <svg class="skill-circle-progress" width="160" height="160" viewBox="0 0 160 160">
+                <circle class="skill-circle-bg" cx="80" cy="80" r="70" />
+                <circle class="skill-circle-fill" cx="80" cy="80" r="70" />
+              </svg>
+              <div class="skill-circle-text position-absolute top-50 start-50 translate-middle text-center">
+                <span class="skill-percentage">80%</span>
+                <span class="skill-name d-block">{{ skill }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <style>
+          .skill-circle {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+          }
+          .skill-circle-progress {
+            transform: rotate(-90deg);
+          }
+          .skill-circle-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 10;
+          }
+          .skill-circle-fill {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 10;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            animation: circle-fill 2s ease forwards;
+          }
+          .skill-circle-text {
+            width: 100%;
+            color: white;
+          }
+          .skill-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+          .skill-name {
+            font-size: 0.9rem;
+            color: #e5e7eb;
+          }
+          @keyframes circle-fill {
+            to {
+              stroke-dashoffset: 88; /* (440 * (100 - percentage)) / 100 */
+            }
+          }
+        </style>
+        <svg width="0" height="0">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#3b82f6" />
+              <stop offset="100%" stop-color="#8b5cf6" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </section>
+
+      <!-- Projects -->
+      <section id="projects" class="section" data-aos="fade-left">
+        <h2>📂 Projects</h2>
+        <div class="row">
+          {% for project in projects %}
+          <div class="{% if projects|length == 1 %}col-12{% else %}col-md-6{% endif %} mb-3">
+            <div class="card p-3">
+              <h5 style="color: white">
+                {% if project.url %}
+                  <a href="{{ project.url }}" target="_blank" style="color: #4fc3f7; text-decoration: none;">{{ project.name }}</a>
+                {% else %}
+                  {{ project.name }}
+                {% endif %}
+              </h5>
+              <p style="color: white">{{ project.description }}</p>
+              {% if project.language %}
+                <p style="color: #d1d5db;"><strong>Language:</strong> {{ project.language }}</p>
+              {% endif %}
+              {% if project.commits is defined %}
+                <p style="color: #d1d5db;">📝 {{ project.commits }} commits &nbsp; 🌿 {{ project.branches }} branches</p>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Experience -->
+      {% if experience and experience|selectattr('role')|list %}
+      <section id="experience" class="section" data-aos="fade-up">
+        <h2>💼 Experience</h2>
+        <div class="row">
+          {% for exp in experience %}
+          {% if exp.role %}
+          <div class="col-12 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="card-title mb-0">{{ exp.role }}</h5>
+                  <span class="badge bg-primary px-3 py-2" style="background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;">
+                    {{ exp.duration if exp.duration else 'Present' }}
+                  </span>
+                </div>
+                <h6 class="card-subtitle mb-3" style="color: #a5b4fc;">
+                  <i class="fas fa-building me-2"></i>{{ exp.companyName }}
+                </h6>
+                {% if exp.description %}
+                <p class="card-text" style="color: #e5e7eb;">{{ exp.description }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Certifications -->
+      {% if certifications and certifications|select('string')|list %}
+      <section id="certifications" class="section" data-aos="fade-up">
+        <h2>📜 Certifications</h2>
+        <div class="row">
+          {% for cert in certifications %}
+          {% if cert %}
+          <div class="col-md-6 mb-3">
+            <div class="card">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-certificate text-warning me-3" style="font-size: 1.5rem;"></i>
+                <h6 class="mb-0">{{ cert }}</h6>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Achievements -->
+      {% if achievements and achievements|select('string')|list %}
+      <section id="achievements" class="section" data-aos="fade-up">
+        <h2>🏆 Achievements</h2>
+        <div class="row">
+          {% for achievement in achievements %}
+          {% if achievement %}
+          <div class="col-12 mb-3">
+            <div class="card">
+              <div class="d-flex align-items-start">
+                <i class="fas fa-trophy text-warning me-3 mt-1" style="font-size: 1.5rem;"></i>
+                <p class="mb-0" style="color: #e5e7eb;">{{ achievement }}</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <script>
+      // Initialize AOS
+      AOS.init({ duration: 1000, once: true });
+
+      // Typed.js animation
+      var typed = new Typed("#typed-text", {
+        strings: [
+          "Welcome to my portfolio!",
+          "I am passionate about tech 🚀",
+          "Here are my skills, projects & more!",
+        ],
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 2000,
+        loop: true,
+      });
+      
+      // Toggle sidebar for mobile
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.querySelector('.navbar-toggle');
+        
+        if (window.innerWidth <= 768 && 
+            !sidebar.contains(event.target) && 
+            !toggle.contains(event.target) && 
+            sidebar.classList.contains('show')) {
+          sidebar.classList.remove('show');
+        }
+      });
+      
+      // Set profile image from GitHub
+      function setProfileImage() {
+        const githubUrl = '{{ githubUrl }}';
+        if (githubUrl) {
+          const githubUsername = githubUrl.split('github.com/')[1]?.split('/')[0];
+          if (githubUsername) {
+            document.getElementById('profileImage').src = `https://github.com/${githubUsername}.png?size=120`;
+          }
+        }
+      }
+      
+      setProfileImage();
+    </script>
+  </body>
+</html>

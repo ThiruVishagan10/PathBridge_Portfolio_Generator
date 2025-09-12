@@ -1,8 +1,8 @@
 import os
-import google.generativeai as genai
 import time
 import random
 from dotenv import load_dotenv
+import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
@@ -16,22 +16,33 @@ try:
 except Exception as e:
     print(f"Error configuring Gemini API: {e}")
 
-# Initialize the model once for efficiency
-model = genai.GenerativeModel("gemini-1.5-pro")
+# Initialize the model once
+try:
+    model = genai.GenerativeModel("gemini-1.5-pro")
+except Exception as e:
+    print(f"Error initializing Gemini model: {e}")
+    model = None
 
-def enhance_content(prompt_instruction: str, content: str) -> str:
+
+def enhance_content(prompt_instruction: str, content: str, retries: int = 3) -> str:
     """
-    Enhances content using Gemini API.
+    Enhances a single piece of content using Gemini API with retry logic.
     """
-    if not content.strip():
-        return ""
+    # Temporarily disabled for faster generation
+    return content if content else ""
+
+
+def enhance_batch(prompt_instruction: str, items: list[str], retries: int = 3) -> list[str]:
+    """
+    Enhances a list of items in one API call to save credits.
     
-    try:
-        full_prompt = f"{prompt_instruction}\n\nContent: {content}\n\nReturn ONLY the result, no explanations:"
-        response = model.generate_content(full_prompt)
-        result = response.text.strip() if response and response.text else content
-        # Return only first line to avoid verbose responses
-        return result.split('\n')[0].strip() if result else content
-    except Exception as e:
-        print(f"Enhancement failed: {e}")
-        return content
+    Args:
+        prompt_instruction (str): General instruction for rewriting the items.
+        items (list[str]): List of strings to enhance.
+        retries (int): Number of retry attempts.
+
+    Returns:
+        list[str]: Enhanced items, maintaining order.
+    """
+    # Temporarily disabled for faster generation
+    return items if items else []

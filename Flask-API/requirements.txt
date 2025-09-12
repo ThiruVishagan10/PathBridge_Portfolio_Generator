@@ -3,3 +3,4 @@ flask-cors
 jinja2
 google-generativeai
 python-dotenv
+requests
