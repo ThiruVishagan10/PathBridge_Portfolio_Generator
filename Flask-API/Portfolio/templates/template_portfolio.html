@@ -59,11 +59,11 @@
         backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.125);
         border-radius: 24px;
-        padding: 2rem;
-        margin: 2rem auto;
+        padding: 1rem;
+        margin: 1rem auto;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        width: 100%;
-        max-width: 1200px;
+        width: calc(100% - 2rem);
+        max-width: 100%;
       }
       h1 {
         font-size: 3rem;
@@ -81,8 +81,8 @@
         margin-bottom: 1.5rem;
       }
       .section {
-        margin: 3rem 0;
-        padding: 1.5rem;
+        margin: 1rem 0;
+        padding: 1rem;
         background: rgba(31, 41, 55, 0.5);
         border-radius: 16px;
         border: 1px solid rgba(75, 85, 99, 0.3);
@@ -185,18 +185,22 @@
         padding-top: 70px;
       }
       
-      .container {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 1rem;
-      }
-      
       main {
-        padding: 2rem 1rem;
+        padding: 1rem;
       }
       
       h1 {
-        font-size: 2rem !important;
+        font-size: 1.8rem !important;
+      }
+      
+      .skill-circle {
+        width: 120px !important;
+        height: 120px !important;
+      }
+      
+      .skill-circle-progress {
+        width: 120px !important;
+        height: 120px !important;
       }
       
       /* Desktop */
@@ -219,6 +223,12 @@
         .container {
           width: calc(100vw - 320px) !important;
           max-width: 1200px !important;
+          padding: 2rem;
+        }
+        
+        .section {
+          margin: 3rem 0;
+          padding: 1.5rem;
         }
         
         main {
@@ -227,6 +237,16 @@
         
         h1 {
           font-size: 3rem !important;
+        }
+        
+        .skill-circle {
+          width: 160px !important;
+          height: 160px !important;
+        }
+        
+        .skill-circle-progress {
+          width: 160px !important;
+          height: 160px !important;
         }
       }
       
@@ -267,6 +287,36 @@
         font-size: 0.9rem;
         color: #e5e7eb;
       }
+      
+      /* Scroll to Top Button */
+      .scroll-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      
+      .scroll-top.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      .scroll-top:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      }
     </style>
   </head>
   <body>
@@ -295,6 +345,22 @@
         <!-- Name -->
         <h4 class="fw-bold mb-1">{{ name }}</h4>
         
+        <!-- Contact Info -->
+        {% if mobile or email %}
+        <div class="mb-3 text-center">
+          {% if email %}
+          <p class="mb-1" style="color: #d1d5db; font-size: 0.9rem;">
+            <i class="fas fa-envelope me-2"></i>{{ email }}
+          </p>
+          {% endif %}
+          {% if mobile %}
+          <p class="mb-1" style="color: #d1d5db; font-size: 0.9rem;">
+            <i class="fas fa-phone me-2"></i>{{ mobile }}
+          </p>
+          {% endif %}
+        </div>
+        {% endif %}
+
         <!-- Social Links -->
         <div class="d-flex justify-content-center gap-3 mb-4">
           {% if linkedinUrl %}
@@ -334,7 +400,7 @@
         </div>
       </main>
 
-      <div class="container mx-auto" style="margin-left: auto; margin-right: auto; width: calc(100vw - 320px);">
+      <div class="container mx-auto">
       <!-- About -->
       <section id="about" class="section" data-aos="fade-up">
         <h2>👨🎓 About Me</h2>
@@ -445,7 +511,7 @@
                   <i class="fas fa-building me-2"></i>{{ exp.companyName }}
                 </h6>
                 {% if exp.description %}
-                <p class="card-text" style="color: #e5e7eb;">{{ exp.description }}</p>
+                <p class="card-text" style="color: #e5e7eb;">{{ exp.description | replace('**', '') }}</p>
                 {% endif %}
               </div>
             </div>
@@ -463,11 +529,19 @@
         <div class="row">
           {% for cert in certifications %}
           {% if cert %}
-          <div class="col-md-6 mb-3">
-            <div class="card">
-              <div class="d-flex align-items-center">
-                <i class="fas fa-certificate text-warning me-3" style="font-size: 1.5rem;"></i>
-                <h6 class="mb-0">{{ cert }}</h6>
+          <div class="{% if certifications|select('string')|list|length == 1 %}col-12{% else %}col-md-6{% endif %} mb-4">
+            <div class="card p-4">
+              <div class="d-flex align-items-start">
+                <i class="fas fa-certificate text-warning me-3 mt-1" style="font-size: 2rem;"></i>
+                <div class="flex-grow-1">
+                  {% set cert_parts = cert.split(':') %}
+                  {% if cert_parts|length > 1 %}
+                    <h5 class="mb-2" style="color: #4fc3f7;">{{ cert_parts[0] | replace('**', '') }}</h5>
+                    <p class="mb-0" style="color: #e5e7eb; line-height: 1.6;">{{ cert_parts[1:] | join(':') | replace('**', '') | trim }}</p>
+                  {% else %}
+                    <h5 class="mb-0" style="color: #4fc3f7;">{{ cert | replace('**', '') }}</h5>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
@@ -479,6 +553,11 @@
 
       </div>
     </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+      <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -524,11 +603,39 @@
       // Set profile image from GitHub
       function setProfileImage() {
         const githubUrl = '{{ githubUrl }}';
+        const profileImg = document.getElementById('profileImage');
+        const fallbackImg = 'https://via.placeholder.com/120/4f46e5/ffffff?text=' + encodeURIComponent('{{ name }}'.charAt(0));
+        
+        console.log('Setting profile image...');
+        console.log('GitHub URL:', githubUrl);
+        
+        // Always set fallback first to ensure image is visible
+        profileImg.src = fallbackImg;
+        
         if (githubUrl) {
-          const githubUsername = githubUrl.split('github.com/')[1]?.split('/')[0];
-          if (githubUsername) {
-            document.getElementById('profileImage').src = `https://github.com/${githubUsername}.png?size=120`;
+          const githubId = githubUrl.split('github.com/')[1]?.split('/')[0];
+          console.log('GitHub ID:', githubId);
+          
+          if (githubId) {
+            const profileImageUrl = `https://github.com/${githubId}.png?size=120`;
+            console.log('Trying GitHub image:', profileImageUrl);
+            
+            // Create new image to test if GitHub image loads
+            const testImg = new Image();
+            testImg.onload = function() {
+              console.log('GitHub image loaded successfully');
+              profileImg.src = profileImageUrl;
+            };
+            testImg.onerror = function() {
+              console.error('Failed to load GitHub profile image from:', profileImageUrl);
+              console.log('Using fallback image instead');
+            };
+            testImg.src = profileImageUrl;
+          } else {
+            console.error('Could not extract GitHub ID from URL');
           }
+        } else {
+          console.log('No GitHub URL provided, using fallback image');
         }
       }
       
@@ -550,6 +657,24 @@
       
       // Initialize skill circles animation when page loads
       window.addEventListener('load', animateSkillCircles);
+      
+      // Scroll to top functionality
+      const scrollTopBtn = document.getElementById('scrollTop');
+      
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+          scrollTopBtn.classList.add('show');
+        } else {
+          scrollTopBtn.classList.remove('show');
+        }
+      });
+      
+      scrollTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
     </script>
   </body>
 </html>

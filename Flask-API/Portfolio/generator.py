@@ -150,6 +150,8 @@ def generate_portfolio(data: dict) -> str:
         "skills": enhanced_skills,
         "linkedinUrl": data.get("linkedinUrl", ""),
         "githubUrl": data.get("githubUrl", ""),
+        "mobile": data.get("mobile", ""),
+        "email": data.get("email", ""),
         "projects": enhanced_projects,
         "experience": enhanced_experiences,
         "certifications": enhanced_certs,
