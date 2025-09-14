@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>John Doe's Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background: #0d0d0f;
+      color: #e6e6f0; 
+      line-height: 1.6; 
+      position: relative; 
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+
+    /* Video Background */
+    .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; }
+    .video-bg video { width: 100%; height: 100%; object-fit: cover; filter: blur(5px) brightness(0.4); opacity: 0.45; }
+
+    /* Overlay effect */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at center, rgba(88,101,242,0.15), rgba(0,0,0,0.9));
+      z-index: -1;
+    }
+
+    /* Navigation */
+    nav { position: fixed; top: 0; width: 100%; background: rgba(15,15,25,0.95); backdrop-filter: blur(12px); border-bottom: 2px solid #5865F2; z-index: 1000; padding: 15px 0; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { background: linear-gradient(45deg, #5865F2, #8A2BE2, #6C63FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.8rem; font-weight: bold; text-decoration: none; animation: gradientShift 4s ease-in-out infinite; }
+    .nav-links { display: flex; list-style: none; gap: 20px; }
+    .nav-links a { color: #e6e6f0; text-decoration: none; padding: 10px 15px; border-radius: 25px; transition: all 0.3s; }
+    .nav-links a:hover { background: linear-gradient(45deg, #5865F2, #8A2BE2); color: #fff; transform: scale(1.05); }
+
+    /* Hero Section */
+    .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 25px; }
+    .hero h1 { font-size: 3.2rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(138,43,226,0.4); }
+    .hero .name { background: linear-gradient(45deg, #5865F2, #8A2BE2, #6C63FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite; }
+    .hero .btn { padding: 12px 28px; border-radius: 30px; font-weight: 500; border: none; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+    .btn-primary { background: linear-gradient(45deg, #5865F2, #8A2BE2); color: white; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(138,43,226,0.4); }
+
+    /* Social links */
+    .social-links a { margin: 0 10px; font-size: 1.6rem; color: #cfcfff; transition: 0.3s; }
+    .social-links a:hover { color: #5865F2; }
+
+    /* Sections */
+    section { padding: 80px 0; }
+    .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 50px; background: linear-gradient(45deg, #5865F2, #8A2BE2, #6C63FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite; text-shadow: 0 0 12px rgba(138,43,226,0.25); }
+    @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    .section-content { background: rgba(25,25,35,0.85); backdrop-filter: blur(10px); border-radius: 15px; padding: 40px; margin: 20px 0; border: 1px solid rgba(138,43,226,0.3); box-shadow: 0 8px 25px rgba(138,43,226,0.2); }
+
+    /* Cards Grid */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .card { background: rgba(20,20,30,0.9); border-radius: 15px; padding: 25px; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid rgba(138,43,226,0.25); }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(88,101,242,0.35); }
+    .card-title { background: linear-gradient(45deg, #5865F2, #8A2BE2, #6C63FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; animation: gradientShift 4s ease-in-out infinite; }
+
+    /* Skills (circular progress) */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; }
+    .skill-item { text-align: center; }
+    .skill-circle { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(from 0deg, #5865F2 var(--percent), #333 var(--percent)); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; animation: skillPulse 2s ease-in-out infinite; }
+    @keyframes skillPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(88,101,242,0.7); } 50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(88,101,242,0); } }
+    .skill-inner { width: 90px; height: 90px; border-radius: 50%; background: #0d0d0f; display: flex; align-items: center; justify-content: center; }
+    .skill-percent { color: #fff; font-weight: bold; font-size: 12px; text-align: center; line-height: 1.2; }
+    .skill-name { margin-top: 5px; }
+
+    /* Timeline (Experience) */
+    .experience-item { display: flex; margin-bottom: 30px; align-items: center; }
+    .experience-item:nth-child(even) { flex-direction: row-reverse; }
+    .experience-time { flex: 1; text-align: center; font-weight: bold; color: #8A2BE2; }
+    .experience-content { flex: 2; padding: 0 20px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 2rem; }
+      .experience-item { flex-direction: column !important; text-align: center; }
+      .experience-content { padding: 20px 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Video Background -->
+  <div class="video-bg">
+    <video autoplay muted loop>
+      <source src="https://motionbgs.com/media/1650/futuristic-elements-hud.960x540.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">John</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>
+        <span class="greeting">Hi, I am</span><br>
+        <span class="name">John Doe</span><br>
+        <span id="typed-text"></span>
+      </h1>
+      <!-- <div>
+        <a href="resume.pdf" class="btn btn-primary" download>Download Resume</a>
+      </div> -->
+      <div class="social-links">
+        <a href="https://linkedin.com/in/johndoe" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/johndoe" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="mailto:john@example.com"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About Me</h2>
+      <div class="section-content">
+        <p>Passionate software developer with 3 years of experience in web development.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education Section -->
+  <section id="education">
+    <div class="container">
+      <h2 class="section-title">Education</h2>
+      <div class="section-content">
+        <div class="card">
+          <h3 class="card-title">B.Sc Computer Science</h3>
+          <p>XYZ University — 2022</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">Skills</h2>
+      <div class="section-content">
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-circle" style="--percent: 288deg;">
+              <div class="skill-inner"><span class="skill-percent">React<br>80%</span></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-circle" style="--percent: 306deg;">
+              <div class="skill-inner"><span class="skill-percent">Next.js<br>85%</span></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-circle" style="--percent: 324deg;">
+              <div class="skill-inner"><span class="skill-percent">Tailwind<br>90%</span></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-circle" style="--percent: 270deg;">
+              <div class="skill-inner"><span class="skill-percent">Python<br>75%</span></div>
+            </div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-circle" style="--percent: 342deg;">
+              <div class="skill-inner"><span class="skill-percent">JavaScript<br>95%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience">
+    <div class="container">
+      <h2 class="section-title">Experience</h2>
+      <div class="section-content">
+        <div class="experience-item">
+          <div class="experience-time">2022 - Present</div>
+          <div class="experience-content">
+            <h4>Software Engineer</h4>
+            <p>ABC Corp</p>
+          </div>
+        </div>
+        <div class="experience-item">
+          <div class="experience-time">2021 - 2022</div>
+          <div class="experience-content">
+            <h4>Frontend Developer</h4>
+            <p>Tech Startup</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title">Projects</h2>
+      <div class="section-content cards">
+        <div class="card">
+          <h3 class="card-title">Portfolio Website</h3>
+          <p>A modern portfolio built using Next.js and Tailwind CSS</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">E-commerce App</h3>
+          <p>Full-stack shopping application with React and Node.js</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements Section -->
+  <section id="achievements">
+    <div class="container">
+      <h2 class="section-title">Achievements</h2>
+      <div class="section-content cards">
+        <div class="card">
+          <h3 class="card-title">Best Student Award</h3>
+          <p>Received for outstanding academic performance</p>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Hackathon Winner</h3>
+          <p>Won first place in university coding competition</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications Section -->
+  <section id="certifications">
+    <div class="container">
+      <h2 class="section-title">Certifications</h2>
+      <div class="section-content cards">
+        <div class="card">
+          <h3 class="card-title">AWS Certified Solutions Architect</h3>
+        </div>
+        <div class="card">
+          <h3 class="card-title">Google Cloud Professional Developer</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typed.js -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script>
+    var typed = new Typed("#typed-text", {
+      strings: ["Web Developer", "UI/UX Enthusiast", "Problem Solver"],
+      typeSpeed: 50,
+      backSpeed: 30,
+      loop: true,
+    });
+  </script>
+</body>
+</html>
