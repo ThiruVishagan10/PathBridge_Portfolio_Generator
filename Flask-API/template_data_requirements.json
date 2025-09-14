@@ -1,0 +1,51 @@
+{
+  "Modern_Template_Requirements": {
+    "templateName": "Modern",
+    "required_fields": {
+      "name": "string - Full name for hero section and navigation logo",
+      "about": "string - About me description",
+      "education": "string - Education details"
+    },
+    "optional_fields": {
+      "linkedinUrl": "string - LinkedIn profile URL for social links",
+      "githubUrl": "string - GitHub profile URL for social links", 
+      "email": "string - Email for contact link",
+      "skills": [
+        {
+          "name": "string - Skill name (e.g., 'React', 'Python')",
+          "percentage": "number - Skill level 0-100 for circular progress"
+        }
+      ],
+      "experience": [
+        {
+          "role": "string - Job title",
+          "companyName": "string - Company name", 
+          "duration": "string - Time period (e.g., '2022 - Present')",
+          "description": "string - Job description"
+        }
+      ],
+      "projects": [
+        {
+          "name": "string - Project title",
+          "description": "string - Project description",
+          "url": "string - Project URL (optional)",
+          "language": "string - Primary language/tech used"
+        }
+      ],
+      "achievements": [
+        "string - Achievement description"
+      ],
+      "certifications": [
+        "string - Certification name"
+      ]
+    }
+  },
+  "Creative_Template_Requirements": {
+    "templateName": "Creative",
+    "note": "Template file exists but needs to be implemented with Jinja2 variables"
+  },
+  "Minimal_Template_Requirements": {
+    "templateName": "Minimal", 
+    "note": "Template file exists but needs to be implemented with Jinja2 variables"
+  }
+}

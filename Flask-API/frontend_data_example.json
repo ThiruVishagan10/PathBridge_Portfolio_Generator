@@ -1,0 +1,38 @@
+{
+  "templateName": "Modern",
+  "name": "John Doe",
+  "about": "Passionate software developer with 3+ years of experience in web development and machine learning.",
+  "education": "Bachelor of Science in Computer Science, Stanford University (2020-2024) - GPA: 3.8/4.0",
+  "githubUrl": "https://github.com/johndoe",
+  "linkedinUrl": "https://linkedin.com/in/johndoe",
+  "skills": [
+    {"name": "Python", "percentage": 90},
+    {"name": "JavaScript", "percentage": 85},
+    {"name": "React", "percentage": 80},
+    {"name": "Node.js", "percentage": 75}
+  ],
+  "experience": [
+    {
+      "role": "Software Engineer",
+      "companyName": "Tech Corp",
+      "duration": "2022-2024",
+      "description": "Developed web applications using React and Node.js"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Portfolio Website",
+      "description": "Modern responsive portfolio built with React",
+      "url": "https://github.com/johndoe/portfolio",
+      "language": "JavaScript"
+    }
+  ],
+  "achievements": [
+    "Winner of Hackathon 2023",
+    "Dean's List for 4 semesters"
+  ],
+  "certifications": [
+    "AWS Certified Developer",
+    "Google Cloud Professional"
+  ]
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Doe's Portfolio</title>
+    <title>{{ name }}'s Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -95,15 +95,16 @@
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <a href="#" class="logo">john</a>
+            <a href="#" class="logo">{{ name.split()[0].lower() if name else 'portfolio' }}</a>
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="#education">Education</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#achievements">Achievements</a></li>
-                <li><a href="#certifications">Certifications</a></li>
+                {% if skills %}<li><a href="#skills">Skills</a></li>{% endif %}
+                {% if experiences %}<li><a href="#experience">Experience</a></li>{% endif %}
+                {% if projects %}<li><a href="#projects">Projects</a></li>{% endif %}
+                {% if achievements %}<li><a href="#achievements">Achievements</a></li>{% endif %}
+                {% if certifications %}<li><a href="#certifications">Certifications</a></li>{% endif %}
+
             </ul>
         </div>
     </nav>
@@ -113,8 +114,7 @@
         <div class="container">
             <h1>
                 <span class="greeting">Hi, I am</span><br>
-                <span class="name">John</span><br>
-                <span class="name">Doe</span>
+                <span class="name">{{ name }}</span>
             </h1>
         </div>
     </section>
@@ -124,10 +124,11 @@
         <div class="container">
             <h2 class="section-title">About Me</h2>
             <div class="section-content">
-                <p class="about-text">Passionate software developer with 3 years of experience in web development</p>
+                <p class="about-text">{{ about }}</p>
                 <div class="social-links">
-                    <a href="https://linkedin.com/in/johndoe" target="_blank" class="social-btn">Visit LinkedIn</a>
-                    <a href="https://github.com/johndoe" target="_blank" class="social-btn">Visit GitHub</a>
+                    {% if linkedinUrl %}<a href="{{ linkedinUrl }}" target="_blank" class="social-btn">Visit LinkedIn</a>{% endif %}
+                    {% if githubUrl %}<a href="{{ githubUrl }}" target="_blank" class="social-btn">Visit GitHub</a>{% endif %}
+                    {% if email %}<a href="mailto:{{ email }}" class="social-btn">Contact Me</a>{% endif %}
                 </div>
             </div>
         </div>
@@ -141,9 +142,9 @@
                 <div class="education-icon">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
-                <h3 class="degree">B.Sc Computer Science</h3>
-                <h4 class="college">XYZ University</h4>
-                <span class="year">2022</span>
+                <h3 class="degree">{{ degree if degree else education }}</h3>
+                {% if collegeName %}<h4 class="college">{{ collegeName }}</h4>{% endif %}
+                {% if yearOfPassing %}<span class="year">{{ yearOfPassing }}</span>{% endif %}
             </div>
         </div>
     </section>
@@ -154,46 +155,31 @@
             <h2 class="section-title">Skills</h2>
             <div class="section-content">
                 <div class="skills-grid">
-                    <div class="skill-item">
-                        <div class="skill-circle" style="--percent: 288deg;">
-                            <div class="skill-inner">
-                                <span class="skill-percent">80%</span>
+                    {% if skills %}
+                        {% if skills is string %}
+                            {% for skill in skills.split(',') %}
+                            <div class="skill-item">
+                                <div class="skill-circle" style="--percent: 288deg;">
+                                    <div class="skill-inner">
+                                        <span class="skill-percent">80%</span>
+                                    </div>
+                                </div>
+                                <div class="skill-name">{{ skill.strip() }}</div>
                             </div>
-                        </div>
-                        <div class="skill-name">React</div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-circle" style="--percent: 306deg;">
-                            <div class="skill-inner">
-                                <span class="skill-percent">85%</span>
+                            {% endfor %}
+                        {% else %}
+                            {% for skill in skills %}
+                            <div class="skill-item">
+                                <div class="skill-circle" style="--percent: {{ (skill.percentage or 80) * 3.6 }}deg;">
+                                    <div class="skill-inner">
+                                        <span class="skill-percent">{{ skill.percentage or 80 }}%</span>
+                                    </div>
+                                </div>
+                                <div class="skill-name">{{ skill.name if skill.name else skill }}</div>
                             </div>
-                        </div>
-                        <div class="skill-name">Next.js</div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-circle" style="--percent: 324deg;">
-                            <div class="skill-inner">
-                                <span class="skill-percent">90%</span>
-                            </div>
-                        </div>
-                        <div class="skill-name">Tailwind</div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-circle" style="--percent: 270deg;">
-                            <div class="skill-inner">
-                                <span class="skill-percent">75%</span>
-                            </div>
-                        </div>
-                        <div class="skill-name">Python</div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-circle" style="--percent: 342deg;">
-                            <div class="skill-inner">
-                                <span class="skill-percent">95%</span>
-                            </div>
-                        </div>
-                        <div class="skill-name">JavaScript</div>
-                    </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -204,24 +190,20 @@
         <div class="container">
             <h2 class="section-title">Experience</h2>
             <div class="section-content">
-                <div class="experience-item">
-                    <div class="experience-time">
-                        <h3>2022-Present</h3>
+                {% if experiences %}
+                    {% for exp in experiences %}
+                    <div class="experience-item">
+                        <div class="experience-time">
+                            <h3>{{ exp.duration if exp.duration else 'Present' }}</h3>
+                        </div>
+                        <div class="experience-content">
+                            <h4>{{ exp.role }}</h4>
+                            <p>{{ exp.companyName }}</p>
+                            {% if exp.description %}<p>{{ exp.description }}</p>{% endif %}
+                        </div>
                     </div>
-                    <div class="experience-content">
-                        <h4>Software Engineer</h4>
-                        <p>ABC Corp</p>
-                    </div>
-                </div>
-                <div class="experience-item">
-                    <div class="experience-time">
-                        <h3>2021-2022</h3>
-                    </div>
-                    <div class="experience-content">
-                        <h4>Frontend Developer</h4>
-                        <p>Tech Startup</p>
-                    </div>
-                </div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </section>
@@ -232,14 +214,14 @@
             <h2 class="section-title">Projects</h2>
             <div class="section-content">
                 <div class="grid">
-                    <div class="card">
-                        <h3 class="card-title">Portfolio Website</h3>
-                        <p class="card-desc">A modern portfolio built using Next.js and Tailwind CSS</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="card-title">E-commerce App</h3>
-                        <p class="card-desc">Full-stack shopping application with React and Node.js</p>
-                    </div>
+                    {% if projects %}
+                        {% for project in projects %}
+                        <div class="card">
+                            <h3 class="card-title">{{ project.name if project.name else project }}</h3>
+                            {% if project.description %}<p class="card-desc">{{ project.description }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -251,14 +233,18 @@
             <h2 class="section-title">Achievements</h2>
             <div class="section-content">
                 <div class="grid">
-                    <div class="card">
-                        <h3 class="card-title">Best Student Award</h3>
-                        <p class="card-desc">Received for outstanding academic performance</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="card-title">Hackathon Winner</h3>
-                        <p class="card-desc">Won first place in university coding competition</p>
-                    </div>
+                    {% if achievements %}
+                        {% for achievement in achievements %}
+                        <div class="card">
+                            {% if achievement.name %}
+                                <h3 class="card-title">{{ achievement.name }}</h3>
+                                {% if achievement.description %}<p class="card-desc">{{ achievement.description }}</p>{% endif %}
+                            {% else %}
+                                <h3 class="card-title">{{ achievement }}</h3>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -270,12 +256,13 @@
             <h2 class="section-title">Certifications</h2>
             <div class="section-content">
                 <div class="grid">
-                    <div class="card">
-                        <h3 class="card-title">AWS Certified Solutions Architect</h3>
-                    </div>
-                    <div class="card">
-                        <h3 class="card-title">Google Cloud Professional Developer</h3>
-                    </div>
+                    {% if certifications %}
+                        {% for cert in certifications %}
+                        <div class="card">
+                            <h3 class="card-title">{{ cert }}</h3>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
